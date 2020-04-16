@@ -1,6 +1,6 @@
 name = "cloudflare-intern-app-fullstack"
 type = "javascript"
-account_id = ""
+account_id = "ce6c9c13712f2f990705fecfd0d632af"
 workers_dev = true
 route = ""
 zone_id = ""
