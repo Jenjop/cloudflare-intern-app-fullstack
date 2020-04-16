@@ -9,71 +9,26 @@ addEventListener('fetch', event => {
 async function handleRequest(request) {
 	const url = 'https://cfw-takehome.developers.workers.dev/api/variants'
 
-	let response = fetch(url)
+	// let response = await fetch(url).then(res => {return res})
+	// console.log("Response: " + response)
+	// console.log("Status: " + response.status)
+	// let j = await response.json()
+	// console.log('Variants: ' + j['variants'])
+	// const variants = j['variants']
+	// const variant = variants[Math.floor(Math.random() * variants.length)]
+	// return fetch(variant)
 
-	console.log("Response: " + response)
-	return fetchRequest
-
-	console.log(fetchRequest.json())
-
-	fetch(url)
-	.then(response => response.json())
-	.then(data => console.log(data))
-
-	fetch(url).then(response => console.log(response.status))
-
-	fetch(url).then(
-		console.log('pre'),
-		response => {
-			console.log('pre-in')
-			console.log('post-in')
-		},
-		console.log('post')
-	)
+	let response = await fetch(url).then(res => res.json())
+	const variants = response['variants']
+	const ind = Math.floor(Math.random() * variants.length)
+	console.log('Random Index: ' + ind)
+	let variant = variants[ind]
+	return fetch(variant)
 
 
-	// fetch(url)
-	// 	.then((response) => {
 
-	// 		console.log('1 response');
-	// 		return response.json();
-	// 	},console.log('1'))
-	// 	.then((data) => {
-	// 		console.log(data);
-	// 	}, console.log('2'));
-
-	// fetch(url).then(
-	// 	function(response){
-	// 		console.log("Fetch Function")
-	// 		if (response.status !==200){
-	// 			console.log("Problem: " + response.status);
-	// 			return;
-	// 		}
-	// 		response.json().then(function(data){
-	// 			console.log("Data")
-	// 			console.log(data);
-	// 		});
-	// 	},
-	// 	console.log('Fetch Then')
-	// )
-	// .catch(function(err) {
-	// 	console.log("Fetch Error :-S", err);
-	// })
-
-	// console.log("Filter Requests")
-	// let response
-	// console.log(request)
-	// console.log(request.method)
-	// if (request.method === 'POST') {
-	// 	response = await generate(request)
-	// } else {
-	// 	response = new Response('Expected POST', {status: 500})
-	// }
-	// console.log(response)
-	// return response
-
-
- 	return new Response('Hello worker!', {
-	    headers: { 'content-type': 'text/plain' },
-  	})
+ 	// return new Response('Hello worker!', {
+	 //    headers: { 'content-type': 'text/plain' },
+  // 	})
 }
+
