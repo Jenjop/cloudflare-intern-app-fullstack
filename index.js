@@ -23,6 +23,8 @@ async function handleRequest(request) {
 	const ind = Math.floor(Math.random() * variants.length)
 	console.log('Random Index: ' + ind)
 	let variant = variants[ind]
+	let variant_response = await fetch(variant)
+	return new HTMLRewriter().on('title', new ElementHandler()).transform(variant_response)
 	return fetch(variant)
 
 
@@ -32,3 +34,22 @@ async function handleRequest(request) {
   // 	})
 }
 
+
+class ElementHandler {
+	element(element){
+		console.log(`Incoming Element: ${element.tagName}`)
+		if (element.tagName == 'title'){
+			element.setInnerContent('New Title')
+		} else if (element.tagName == 'h1' && element.id == 'title'){
+			element.setInnerContent('New Header')
+		}
+	}
+
+	// comments(comment) {
+	// 	// console.log(`Comment: ${comment}`)
+	// }
+
+	// text(text) {
+	// 	// console.log(`Text: ${text}`)
+	// }
+}
