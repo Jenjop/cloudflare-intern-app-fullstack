@@ -1,4 +1,4 @@
-var ind
+var ind = -1
 
 addEventListener('fetch', event => {
 	let x = event.respondWith(handleRequest(event.request))
@@ -22,7 +22,33 @@ async function handleRequest(request) {
 
 	let response = await fetch(url).then(res => res.json())
 	const variants = response['variants']
-	ind = Math.floor(Math.random() * variants.length)
+
+	const cookie = getCookie(request, 'ind')
+	if (cookie){
+		console.log(cookie)
+		ind = cookie
+	}
+	else {
+		ind = Math.floor(Math.random() * variants.length)
+		response = new Response(response.body, response)
+		response.headers.set('Set-Cookie', `ind=${ind}`)
+		console.log('\n\nNEWW\n\n')
+		console.log(request.headers.get('Cookie'))
+		console.log('New Cookie' + ind)
+	}
+
+
+	// if (ind == -1){
+	// 	ind = Math.floor(Math.random() * variants.length)
+	// 	document.cookie = `${ind}`
+	// }
+	// else{
+	// 	console.log(document.cookie)
+	// 	let cookiearray = document.cookie.split(';')
+	// }
+
+
+
 	console.log('Random Index: ' + ind)
 	let variant = variants[ind]
 	let variant_response = await fetch(variant)
@@ -33,12 +59,6 @@ async function handleRequest(request) {
 	.on('a#url', new LinkHandler())
 	.transform(variant_response)
 	return fetch(variant)
-
-
-
- 	// return new Response('Hello worker!', {
-	 //    headers: { 'content-type': 'text/plain' },
-  // 	})
 }
 
 
@@ -59,7 +79,7 @@ class MainTitleHandler {
 class DescriptionHandler {
 	element(element){
 		console.log(`Incoming Element: ${element.tagName}`)
-		element.setInnerContent('There Is No Description')
+		element.setInnerContent('There is no description. This is not a plug.')
 	}
 }
 
@@ -71,3 +91,22 @@ class LinkHandler {
 		element.setAttribute('target', '_blank')
 	}
 }
+
+function getCookie(request, name) {
+	let result = null
+	let cookieString = request.headers.get('Cookie')
+	console.log(cookieString)
+	if (cookieString){
+		let cookies = cookieString.split(';')
+		cookies.forEach(cookie => {
+			let cookieName = cookie.split('=')[0].trim()
+			if (cookieName === name){
+				let cookieVal = cookie.split('=')[1]
+				result = cookieVal
+			}
+		})
+	}
+	return result
+}
+
+// function saveCookie(request, name, value)
