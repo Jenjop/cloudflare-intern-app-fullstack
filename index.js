@@ -1,3 +1,5 @@
+var ind
+
 addEventListener('fetch', event => {
 	let x = event.respondWith(handleRequest(event.request))
 	// console.log(x)
@@ -20,11 +22,16 @@ async function handleRequest(request) {
 
 	let response = await fetch(url).then(res => res.json())
 	const variants = response['variants']
-	const ind = Math.floor(Math.random() * variants.length)
+	ind = Math.floor(Math.random() * variants.length)
 	console.log('Random Index: ' + ind)
 	let variant = variants[ind]
 	let variant_response = await fetch(variant)
-	return new HTMLRewriter().on('title', new ElementHandler()).transform(variant_response)
+	return new HTMLRewriter()
+	.on('title', new PageTitleHandler())
+	.on('h1#title', new MainTitleHandler())
+	.on('p#description', new DescriptionHandler())
+	.on('a#url', new LinkHandler())
+	.transform(variant_response)
 	return fetch(variant)
 
 
@@ -35,21 +42,32 @@ async function handleRequest(request) {
 }
 
 
-class ElementHandler {
+class PageTitleHandler {
 	element(element){
 		console.log(`Incoming Element: ${element.tagName}`)
-		if (element.tagName == 'title'){
-			element.setInnerContent('New Title')
-		} else if (element.tagName == 'h1' && element.id == 'title'){
-			element.setInnerContent('New Header')
-		}
+		element.setInnerContent('Custom Title!')
 	}
+}
 
-	// comments(comment) {
-	// 	// console.log(`Comment: ${comment}`)
-	// }
+class MainTitleHandler {
+	element(element){
+		console.log(`Incoming Element: ${element.tagName}`)
+		element.setInnerContent(`Welcome To The ${ind? 'Green' : 'Blue'} Variant!`)
+	}
+}
 
-	// text(text) {
-	// 	// console.log(`Text: ${text}`)
-	// }
+class DescriptionHandler {
+	element(element){
+		console.log(`Incoming Element: ${element.tagName}`)
+		element.setInnerContent('There Is No Description')
+	}
+}
+
+class LinkHandler {
+	element(element){
+		console.log(`Incoming Element: ${element.tagName}`)
+		element.setInnerContent('Go to my ~GitHub~')
+		element.setAttribute('href', 'https://github.com/jenjop')
+		element.setAttribute('target', '_blank')
+	}
 }
