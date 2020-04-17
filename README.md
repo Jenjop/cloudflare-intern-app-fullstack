@@ -1,3 +1,7 @@
+Cloudflare Internship Application - FullStack
+
+Created using Worker-template:
+
 # 👷 `worker-template` Hello World
 
 A template for kick starting a Cloudflare worker project.
